@@ -1,0 +1,34 @@
+{
+  "name": "spsql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "micro",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jimthedev/spsql.git"
+  },
+  "keywords": [],
+  "author": "Jim Cummins <jimthedev@gmail.com> (http://github.com/jimthedev)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jimthedev/spsql/issues"
+  },
+  "homepage": "https://github.com/jimthedev/spsql#readme",
+  "dependencies": {
+    "axios": "^0.16.2",
+    "graphql": "^0.10.3",
+    "graphql-server-micro": "^0.9.0",
+    "graphql-tools": "^1.1.0",
+    "logdown": "^2.2.0",
+    "micro": "^7.3.3",
+    "microrouter": "^2.1.1",
+    "optics-agent": "^1.1.4"
+  },
+  "devDependencies": {
+    "devcert-san": "^0.3.3"
+  }
+}
