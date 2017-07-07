@@ -20,13 +20,15 @@
   "homepage": "https://github.com/jimthedev/spsql#readme",
   "dependencies": {
     "axios": "^0.16.2",
+    "dotenv-safe": "^4.0.4",
     "graphql": "^0.10.3",
     "graphql-server-micro": "^0.9.0",
     "graphql-tools": "^1.1.0",
     "logdown": "^2.2.0",
     "micro": "^7.3.3",
     "microrouter": "^2.1.1",
-    "optics-agent": "^1.1.4"
+    "optics-agent": "^1.1.4",
+    "shortid": "^2.2.8"
   },
   "devDependencies": {
     "devcert-san": "^0.3.3"
