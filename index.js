@@ -4,26 +4,17 @@ const { microGraphiql, microGraphql } = require("graphql-server-micro");
 const { send, run } = require("micro");
 const micro = require("micro").default;
 const { get, post, router } = require("microrouter");
-const getDevelopmentCertificate = require("devcert-san").default;
 const querystring = require("querystring");
 const axios = require("axios");
 
 const schema = require("./schema/index");
+const { makeTLS }  = require("./tls");
 const { formatError, log } = require("./logging");
 
 async function startServer() {
-  // Environment and cert setup
-  let ssl;
-  if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
-    try {
-      ssl = await getDevelopmentCertificate("spsql");
-    } catch (e) {
-      log.error(e);
-    }
-  } else {
-    //ssl = // load production ssl ...
-    log.warn("TODO: prod ssl config");
-  }
+
+  // Get a tls config
+  const tls = await makeTLS();
 
   /*
    * Access tokens are passed in via the query string
@@ -39,6 +30,7 @@ async function startServer() {
    * register the schema, error handling, etc.
    */
   const getGraphqlHandler = req => {
+
     const accessToken = getAccessTokenFromRequest(req);
 
     const identityService = axios.create({
@@ -77,13 +69,22 @@ async function startServer() {
     });
   };
 
+  /*
+   * Map handler to handler factory
+   */
   const getGraphiqlHandler = (req, res) => {
     return getGraphiqlTokenHandler(req)(req, res);
   };
 
+  /*
+   * Create an https server, map to micro
+   */
   const microHttps = fn =>
-    https.createServer(ssl, (req, res) => run(req, res, fn));
+    https.createServer(tls, (req, res) => run(req, res, fn));
 
+  /*
+   * Define the micro routes and route handlers
+   */
   const server = microHttps(
     router(
       get("/graphql", (req, res) => {
@@ -95,6 +96,7 @@ async function startServer() {
       get("/", (req, res) => {
         return getGraphiqlHandler(req, res);
       }),
+      // Noop is for a bug in router
       get("/noop", (req, res) => {
         return send(res, 200, "");
       }),
@@ -105,8 +107,9 @@ async function startServer() {
   );
 
   const { PORT = 8100 } = process.env;
-
   log.log("Running on port", PORT);
+
+  // Actually start the server
   server.listen(PORT);
 }
 
